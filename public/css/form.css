@@ -63,7 +63,7 @@
   color: #D32F2F;
   font-size: 0.875rem;
   margin-top: 0.25rem;
-  min-height: 1.25rem; /* Menjaga ruang agar layout tidak lompat */
+  min-height: 1.25rem; 
 }
 
 .info-tambahan {
@@ -124,7 +124,33 @@
   align-self: flex-start;
 }
 
+/* --- TAHAP 6: GAYA KARTU HASIL FORM --- */
 #hasil {
-  max-width: 600px;
-  margin: 0 auto;
+  max-width: 400px; /* Batasi lebar kartu agar tidak memanjang */
+  margin: 2rem auto 0;
+  display: flex;
+  justify-content: center;
+}
+
+.kartu-pemilik {
+  font-size: 0.85rem;
+  color: var(--emas);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.25rem;
+}
+
+.kartu-alasan {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background-color: var(--abu-terang);
+  border-left: 3px solid var(--emas);
+  border-radius: 4px;
+}
+
+.kartu-alasan p {
+  font-style: italic;
+  color: var(--teks-utama);
+  font-size: 0.95rem;
 }

@@ -1,6 +1,9 @@
 // public/js/form.js
 
 const API_URL = 'https://genshin.jmp.blue/characters/all';
+const IMAGE_BASE_URL = 'https://genshin.jmp.blue/characters/';
+const PLACEHOLDER_IMG = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23B8923A"><path d="M12 21.5c-3.5 0-6.5-3-6.5-6.5 0-3.5 4-9.5 6.5-12.5 2.5 3 6.5 9 6.5 12.5 0 3.5-3 6.5-6.5 6.5z"/></svg>';
+const SVG_IKON_ELEMEN = `<svg class="badge-ikon-svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.5c-3.5 0-6.5-3-6.5-6.5 0-3.5 4-9.5 6.5-12.5 2.5 3 6.5 9 6.5 12.5 0 3.5-3 6.5-6.5 6.5z"/></svg>`;
 
 // Referensi Elemen DOM
 const formFavorit = document.getElementById('form-favorit');
@@ -15,16 +18,14 @@ const domHitungAlasan = document.getElementById('hitung-alasan');
 
 const domStatusKarakter = document.getElementById('status-karakter');
 const btnCobaLagi = document.getElementById('btn-coba-lagi-form');
+const btnReset = document.getElementById('btn-reset');
 const domHasil = document.getElementById('hasil');
 
-// Menghubungkan input dengan pesan error untuk aksesibilitas (Screen Reader)
 domNama.setAttribute('aria-describedby', 'error-nama');
 domKarakter.setAttribute('aria-describedby', 'error-karakter');
 domAlasan.setAttribute('aria-describedby', 'error-alasan');
 
-// Fungsi Mengambil Data Karakter untuk Dropdown
 async function ambilDataDropdown() {
-    // Kondisi memuat
     domKarakter.disabled = true;
     domKarakter.innerHTML = '<option value="">Memuat karakter...</option>';
     domStatusKarakter.textContent = '';
@@ -43,12 +44,10 @@ async function ambilDataDropdown() {
             .filter(char => char.nation && char.nation.toLowerCase() === 'fontaine')
             .sort((a, b) => a.name.localeCompare(b.name));
         
-        // Bersihkan dan isi ulang dropdown
         domKarakter.innerHTML = '<option value="">Pilih karakter...</option>';
         
         karakterFontaine.forEach(char => {
             const opsi = document.createElement('option');
-            // Menyimpan string JSON ke dalam value agar data bisa dipakai utuh di tahap selanjutnya
             opsi.value = JSON.stringify(char);
             opsi.textContent = char.name;
             domKarakter.appendChild(opsi);
@@ -64,7 +63,6 @@ async function ambilDataDropdown() {
     }
 }
 
-// Fungsi Utilitas: Set Status Error pada Input
 function setStatusError(inputElemen, errorElemen, pesan) {
     if (pesan) {
         errorElemen.textContent = pesan;
@@ -79,7 +77,6 @@ function setStatusError(inputElemen, errorElemen, pesan) {
     }
 }
 
-// Validasi Field Nama
 function validasiNama() {
     const nilai = domNama.value.trim();
     if (!nilai) return setStatusError(domNama, errNama, 'Nama wajib diisi.');
@@ -89,18 +86,15 @@ function validasiNama() {
     return setStatusError(domNama, errNama, '');
 }
 
-// Validasi Field Karakter (Dropdown)
 function validasiKarakter() {
     const nilai = domKarakter.value;
     if (!nilai) return setStatusError(domKarakter, errKarakter, 'Pilih salah satu karakter.');
     return setStatusError(domKarakter, errKarakter, '');
 }
 
-// Validasi Field Alasan
 function validasiAlasan() {
     const nilai = domAlasan.value.trim();
     
-    // Perbarui Tampilan Penghitung
     domHitungAlasan.textContent = `${nilai.length}/120`;
     if (nilai.length > 120) {
         domHitungAlasan.classList.add('penghitung-error');
@@ -114,7 +108,79 @@ function validasiAlasan() {
     return setStatusError(domAlasan, errAlasan, '');
 }
 
-// Event Listeners: Interaksi dan Validasi Real-time
+function buatKartuHasil() {
+    const namaUser = domNama.value.trim();
+    const alasanUser = domAlasan.value.trim();
+    const charData = JSON.parse(domKarakter.value);
+
+    // Bersihkan hasil sebelumnya
+    domHasil.innerHTML = '';
+
+    // Membangun elemen kartu (Menggunakan kelas dari index.css)
+    const artikel = document.createElement('article');
+    artikel.className = 'kartu';
+
+    const wadahGambar = document.createElement('div');
+    wadahGambar.className = 'kartu-gambar-wadah';
+    
+    const gambar = document.createElement('img');
+    gambar.src = `${IMAGE_BASE_URL}${charData.id}/card`;
+    gambar.alt = `Gambar ${charData.name}`;
+    gambar.onerror = function() {
+        this.src = PLACEHOLDER_IMG;
+        this.classList.add('gambar-error');
+    };
+    wadahGambar.appendChild(gambar);
+
+    const konten = document.createElement('div');
+    konten.className = 'kartu-konten';
+
+    const pemilik = document.createElement('p');
+    pemilik.className = 'kartu-pemilik';
+    pemilik.textContent = `Kartu favorit milik ${namaUser}`;
+
+    const namaKarakter = document.createElement('h2');
+    namaKarakter.className = 'kartu-nama';
+    namaKarakter.textContent = charData.name;
+
+    const wadahElemen = document.createElement('div');
+    wadahElemen.className = 'kartu-info-baris';
+    const badgeElemen = document.createElement('span');
+    const namaVision = charData.vision || 'Unknown';
+    const visionClass = charData.vision ? charData.vision.toLowerCase() : 'unknown';
+    badgeElemen.className = `badge-elemen badge-${visionClass}`;
+    
+    // Inject ikon SVG dengan aman, lalu tambahkan teks elemen sebagai node terpisah (TextNode)
+    badgeElemen.innerHTML = SVG_IKON_ELEMEN;
+    badgeElemen.appendChild(document.createTextNode(` ${namaVision}`));
+    wadahElemen.appendChild(badgeElemen);
+
+    const rarity = document.createElement('div');
+    rarity.className = 'kartu-rarity';
+    const jumlahBintang = parseInt(charData.rarity) || 0;
+    rarity.textContent = '★'.repeat(jumlahBintang);
+
+    const wadahAlasan = document.createElement('div');
+    wadahAlasan.className = 'kartu-alasan';
+    const teksAlasan = document.createElement('p');
+    // Memasukkan alasan pengguna sebagai textContent agar tag HTML tidak dieksekusi (aman dari XSS)
+    teksAlasan.textContent = `"${alasanUser}"`;
+    wadahAlasan.appendChild(teksAlasan);
+
+    // Menyusun hierarki
+    konten.appendChild(pemilik);
+    konten.appendChild(namaKarakter);
+    konten.appendChild(wadahElemen);
+    konten.appendChild(rarity);
+    konten.appendChild(wadahAlasan);
+
+    artikel.appendChild(wadahGambar);
+    artikel.appendChild(konten);
+
+    domHasil.appendChild(artikel);
+}
+
+// Event Listeners: Validasi
 domNama.addEventListener('input', validasiNama);
 domKarakter.addEventListener('change', validasiKarakter);
 domAlasan.addEventListener('input', validasiAlasan);
@@ -122,14 +188,12 @@ btnCobaLagi.addEventListener('click', ambilDataDropdown);
 
 // Event Listener: Submit Form
 formFavorit.addEventListener('submit', (e) => {
-    e.preventDefault(); // Cegah kirim bawaan
+    e.preventDefault();
     
-    // Lakukan validasi pada semua field
     const isNamaValid = validasiNama();
     const isKarakterValid = validasiKarakter();
     const isAlasanValid = validasiAlasan();
 
-    // Jika ada yang tidak valid, pindahkan fokus ke field bermasalah pertama
     if (!isNamaValid) {
         domNama.focus();
     } else if (!isKarakterValid) {
@@ -137,10 +201,27 @@ formFavorit.addEventListener('submit', (e) => {
     } else if (!isAlasanValid) {
         domAlasan.focus();
     } else {
-        // Jika semuanya valid
-        domHasil.innerHTML = '<!-- TODO: Kartu favorit akan dirender di sini pada tahap selanjutnya -->';
+        buatKartuHasil();
     }
 });
 
-// Inisialisasi awal saat script dimuat
+// Event Listener: Reset Form
+btnReset.addEventListener('click', () => {
+    // Kembalikan form ke nilai awal
+    formFavorit.reset();
+
+    // Hilangkan semua state error dan visual invalid
+    setStatusError(domNama, errNama, '');
+    setStatusError(domKarakter, errKarakter, '');
+    setStatusError(domAlasan, errAlasan, '');
+    
+    // Reset penghitung
+    domHitungAlasan.textContent = '0/120';
+    domHitungAlasan.classList.remove('penghitung-error');
+
+    // Hapus kartu hasil
+    domHasil.innerHTML = '';
+});
+
+// Inisialisasi
 ambilDataDropdown();
