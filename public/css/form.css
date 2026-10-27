@@ -29,6 +29,7 @@
   border-radius: 4px;
   font-family: inherit;
   font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .grup-input input:focus,
@@ -37,6 +38,20 @@
   outline: none;
   border-color: var(--biru-utama);
   box-shadow: 0 0 0 2px var(--biru-muda);
+}
+
+/* Gaya Input Error */
+.grup-input input.input-error,
+.grup-input select.input-error,
+.grup-input textarea.input-error {
+  border-color: #D32F2F;
+  box-shadow: 0 0 0 2px rgba(211, 47, 47, 0.1);
+}
+
+.grup-input input.input-error:focus,
+.grup-input select.input-error:focus,
+.grup-input textarea.input-error:focus {
+  box-shadow: 0 0 0 2px rgba(211, 47, 47, 0.3);
 }
 
 .grup-input textarea {
@@ -48,19 +63,33 @@
   color: #D32F2F;
   font-size: 0.875rem;
   margin-top: 0.25rem;
-  min-height: 1.25rem;
+  min-height: 1.25rem; /* Menjaga ruang agar layout tidak lompat */
 }
 
 .info-tambahan {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-top: 0.25rem;
+}
+
+#status-karakter {
+  color: #D32F2F;
+  font-size: 0.875rem;
+  flex-grow: 1;
 }
 
 .penghitung {
   font-size: 0.875rem;
   color: #666;
+  white-space: nowrap;
+  margin-left: 1rem;
+}
+
+/* Gaya Penghitung Error */
+.penghitung.penghitung-error {
+  color: #D32F2F;
+  font-weight: bold;
 }
 
 .aksi-form {
@@ -88,6 +117,11 @@
 
 #btn-reset:hover {
   background-color: var(--biru-muda);
+}
+
+#btn-coba-lagi-form {
+  margin-top: 0.5rem;
+  align-self: flex-start;
 }
 
 #hasil {
