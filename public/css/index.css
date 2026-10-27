@@ -117,6 +117,11 @@ main {
 #status {
   text-align: center;
   margin-bottom: 2rem;
+  padding: 2rem;
+}
+
+#status p {
+  margin-bottom: 1rem;
   font-style: italic;
 }
 
@@ -163,6 +168,79 @@ button:hover {
   #grid {
     grid-template-columns: repeat(4, 1fr);
   }
+}
+
+/* --- TAMBAHAN TAHAP 2: Gaya Kartu Dasar --- */
+.kartu {
+  background-color: var(--putih);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.kartu-gambar-wadah {
+  width: 100%;
+  aspect-ratio: 2 / 3; /* Proporsi standar kartu Genshin */
+  background-color: var(--biru-muda);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.kartu-gambar-wadah img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.kartu:hover .kartu-gambar-wadah img {
+  transform: scale(1.05);
+}
+
+.kartu-gambar-wadah img.gambar-error {
+  width: 40%;
+  height: auto;
+  object-fit: contain;
+}
+
+.kartu-konten {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.kartu-nama {
+  font-size: 1.25rem;
+  color: var(--biru-laut-tua);
+  margin-bottom: 0.25rem;
+}
+
+.kartu-title {
+  font-size: 0.875rem;
+  color: #666;
+  font-style: italic;
+  margin-bottom: 1rem;
+}
+
+.kartu-info {
+  margin-top: auto;
+  font-size: 0.875rem;
+}
+
+.kartu-info p {
+  margin-bottom: 0.25rem;
+}
+
+.kartu-rarity {
+  color: var(--emas);
+  font-size: 1.2rem;
+  margin-top: 0.5rem;
+  letter-spacing: 2px;
 }
 
 /* Footer */
