@@ -2,8 +2,10 @@
 
 const API_URL = 'https://genshin.jmp.blue/characters/all';
 const IMAGE_BASE_URL = 'https://genshin.jmp.blue/characters/';
-// Placeholder berupa SVG data URL jika gambar gagal dimuat
-const PLACEHOLDER_IMG = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%231E5F99"><path d="M12 21.5c-3.5 0-6.5-3-6.5-6.5 0-3.5 4-9.5 6.5-12.5 2.5 3 6.5 9 6.5 12.5 0 3.5-3 6.5-6.5 6.5z"/></svg>';
+// Placeholder berupa SVG data URL dengan warna emas
+const PLACEHOLDER_IMG = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23B8923A"><path d="M12 21.5c-3.5 0-6.5-3-6.5-6.5 0-3.5 4-9.5 6.5-12.5 2.5 3 6.5 9 6.5 12.5 0 3.5-3 6.5-6.5 6.5z"/></svg>';
+// SVG inline sederhana untuk ikon pada badge elemen
+const SVG_IKON_ELEMEN = `<svg class="badge-ikon-svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.5c-3.5 0-6.5-3-6.5-6.5 0-3.5 4-9.5 6.5-12.5 2.5 3 6.5 9 6.5 12.5 0 3.5-3 6.5-6.5 6.5z"/></svg>`;
 
 // Elemen DOM
 const domGrid = document.getElementById('grid');
@@ -14,10 +16,9 @@ const domJumlahHasil = document.getElementById('jumlah-hasil');
 const domCari = document.getElementById('cari');
 const domFilterElemen = document.getElementById('filter-elemen');
 
-// Variabel Global untuk menyimpan data awal agar tidak di-fetch ulang
+// Variabel Global
 let semuaKarakterFontaine = [];
 
-// Fungsi Utama: Mengambil Data
 async function ambilData() {
     tampilkanStatus('Memuat data...', false);
 
@@ -28,14 +29,10 @@ async function ambilData() {
         }
         
         const data = await response.json();
-        
-        // Memastikan format data yang dikembalikan API (bisa berupa object atau array)
         const daftarKarakter = Array.isArray(data) ? data : Object.values(data);
         
-        // Saring dan simpan data utama
         semuaKarakterFontaine = saringDanUrutkan(daftarKarakter);
         
-        // Buat opsi dropdown dan terapkan filter awal (menampilkan semua)
         isiOpsiFilter(semuaKarakterFontaine);
         terapkanFilter();
 
@@ -47,19 +44,14 @@ async function ambilData() {
     }
 }
 
-// Fungsi: Menyaring dan Mengurutkan Data dari API
 function saringDanUrutkan(semuaKarakter) {
     return semuaKarakter
         .filter(char => char.nation && char.nation.toLowerCase() === 'fontaine')
         .sort((a, b) => a.name.localeCompare(b.name));
 }
 
-// Fungsi: Mengisi Opsi Filter Elemen secara dinamis
 function isiOpsiFilter(dataKarakter) {
-    // Mendapatkan elemen (vision) unik dan membuang nilai kosong/undefined
     const elemenUnik = [...new Set(dataKarakter.map(char => char.vision).filter(v => v))].sort();
-    
-    // Reset isi dropdown dengan opsi bawaan
     domFilterElemen.innerHTML = '<option value="Semua elemen">Semua elemen</option>';
     
     elemenUnik.forEach(elemen => {
@@ -70,7 +62,6 @@ function isiOpsiFilter(dataKarakter) {
     });
 }
 
-// Fungsi: Menerapkan Pencarian dan Filter
 function terapkanFilter() {
     const kataKunci = domCari.value.trim().toLowerCase();
     const elemenPilihan = domFilterElemen.value;
@@ -85,12 +76,10 @@ function terapkanFilter() {
     tampilkanKumpulanKartu(hasilFilter, semuaKarakterFontaine.length);
 }
 
-// Fungsi: Membuat Satu Elemen Kartu lewat DOM
 function buatElemenKartu(char) {
     const artikel = document.createElement('article');
     artikel.className = 'kartu';
 
-    // Wadah Gambar
     const wadahGambar = document.createElement('div');
     wadahGambar.className = 'kartu-gambar-wadah';
     
@@ -104,7 +93,6 @@ function buatElemenKartu(char) {
     
     wadahGambar.appendChild(gambar);
 
-    // Wadah Konten
     const konten = document.createElement('div');
     konten.className = 'kartu-konten';
 
@@ -119,20 +107,31 @@ function buatElemenKartu(char) {
     const info = document.createElement('div');
     info.className = 'kartu-info';
 
-    const elemen = document.createElement('p');
-    elemen.textContent = `Elemen: ${char.vision || 'Tidak diketahui'}`;
+    // Badge Elemen
+    const wadahElemen = document.createElement('div');
+    wadahElemen.className = 'kartu-info-baris';
+    
+    const badgeElemen = document.createElement('span');
+    const namaVision = char.vision || 'Unknown';
+    const visionClass = char.vision ? char.vision.toLowerCase() : 'unknown';
+    
+    badgeElemen.className = `badge-elemen badge-${visionClass}`;
+    badgeElemen.innerHTML = `${SVG_IKON_ELEMEN} ${namaVision}`;
+    wadahElemen.appendChild(badgeElemen);
 
-    const senjata = document.createElement('p');
-    senjata.textContent = `Senjata: ${char.weapon || 'Tidak diketahui'}`;
+    // Teks Senjata
+    const wadahSenjata = document.createElement('div');
+    wadahSenjata.className = 'kartu-info-baris';
+    wadahSenjata.textContent = `Senjata: ${char.weapon || 'Tidak diketahui'}`;
 
+    // Rarity (Bintang Emas)
     const rarity = document.createElement('div');
     rarity.className = 'kartu-rarity';
     const jumlahBintang = parseInt(char.rarity) || 0;
     rarity.textContent = '★'.repeat(jumlahBintang);
 
-    // Menyusun elemen
-    info.appendChild(elemen);
-    info.appendChild(senjata);
+    info.appendChild(wadahElemen);
+    info.appendChild(wadahSenjata);
     info.appendChild(rarity);
 
     konten.appendChild(nama);
@@ -145,11 +144,8 @@ function buatElemenKartu(char) {
     return artikel;
 }
 
-// Fungsi: Menampilkan Daftar Kartu ke Grid
 function tampilkanKumpulanKartu(karakterArray, totalKarakter) {
     domGrid.innerHTML = '';
-    
-    // Perbarui teks jumlah hasil
     domJumlahHasil.textContent = `Menampilkan ${karakterArray.length} dari ${totalKarakter} karakter`;
     
     if (karakterArray.length === 0) {
@@ -165,7 +161,6 @@ function tampilkanKumpulanKartu(karakterArray, totalKarakter) {
     });
 }
 
-// Fungsi Utilitas: Mengatur Tampilan Status
 function tampilkanStatus(pesan, tampilkanTombol) {
     domStatus.classList.remove('tersembunyi');
     domPesanStatus.textContent = pesan;
@@ -186,5 +181,4 @@ btnCobaLagi.addEventListener('click', ambilData);
 domCari.addEventListener('input', terapkanFilter);
 domFilterElemen.addEventListener('change', terapkanFilter);
 
-// Inisialisasi halaman
-ambilData();
+ambilData();    

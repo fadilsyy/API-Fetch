@@ -5,7 +5,7 @@
   --biru-muda: #EAF3FA;
   --emas: #B8923A;
   --putih: #FFFFFF;
-  --teks-utama: #333333;
+  --teks-utama: #222222;
   --abu-terang: #F5F5F5;
 }
 
@@ -20,6 +20,12 @@ body {
   color: var(--teks-utama);
   background-color: var(--abu-terang);
   line-height: 1.6;
+}
+
+/* Fokus Keyboard Aksesibilitas */
+*:focus-visible {
+  outline: 3px solid var(--emas);
+  outline-offset: 2px;
 }
 
 /* Navigasi */
@@ -70,6 +76,9 @@ header h1 {
   font-family: Georgia, serif;
   margin-bottom: 0.5rem;
   color: var(--emas);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 header p {
@@ -107,10 +116,11 @@ main {
 
 .kontrol input,
 .kontrol select {
-  padding: 0.5rem;
+  padding: 0.75rem;
   border: 1px solid var(--biru-utama);
   border-radius: 4px;
   font-family: inherit;
+  font-size: 1rem;
 }
 
 /* Status dan Error */
@@ -134,11 +144,13 @@ button {
   background-color: var(--biru-utama);
   color: var(--putih);
   border: none;
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1.5rem;
   border-radius: 4px;
   cursor: pointer;
   font-weight: bold;
   font-family: inherit;
+  font-size: 1rem;
+  transition: background-color 0.2s;
 }
 
 button:hover {
@@ -170,24 +182,26 @@ button:hover {
   }
 }
 
-/* --- TAMBAHAN TAHAP 2: Gaya Kartu Dasar --- */
+/* --- GAYA KARTU KHUSUS FONTAINE --- */
 .kartu {
   background-color: var(--putih);
+  border: 4px double var(--emas); /* Bingkai ornamen bergaya tiket teater */
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 10px rgba(11, 42, 74, 0.1);
   display: flex;
   flex-direction: column;
 }
 
 .kartu-gambar-wadah {
   width: 100%;
-  aspect-ratio: 2 / 3; /* Proporsi standar kartu Genshin */
+  aspect-ratio: 2 / 3;
   background-color: var(--biru-muda);
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  border-bottom: 2px solid var(--emas);
 }
 
 .kartu-gambar-wadah img {
@@ -215,32 +229,61 @@ button:hover {
 }
 
 .kartu-nama {
-  font-size: 1.25rem;
+  font-family: Georgia, serif;
+  font-size: 1.4rem;
   color: var(--biru-laut-tua);
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.1rem;
 }
 
 .kartu-title {
   font-size: 0.875rem;
-  color: #666;
+  color: #555;
   font-style: italic;
   margin-bottom: 1rem;
 }
 
 .kartu-info {
   margin-top: auto;
-  font-size: 0.875rem;
+  font-size: 0.9rem;
 }
 
-.kartu-info p {
-  margin-bottom: 0.25rem;
+.kartu-info-baris {
+  margin-bottom: 0.5rem;
 }
+
+/* Badge Elemen */
+.badge-elemen {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #FFF;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+}
+
+.badge-ikon-svg {
+  margin-right: 0.3rem;
+}
+
+/* Palet Warna Elemen */
+.badge-hydro { background-color: #3FA9F5; }
+.badge-pyro { background-color: #E8622C; }
+.badge-electro { background-color: #9B59D0; }
+.badge-dendro { background-color: #7DB83A; }
+.badge-cryo { background-color: #7FD1E8; color: #111; text-shadow: none; }
+.badge-anemo { background-color: #5FD6B0; color: #111; text-shadow: none; }
+.badge-geo { background-color: #E3B341; color: #111; text-shadow: none; }
+.badge-unknown { background-color: #888; }
 
 .kartu-rarity {
   color: var(--emas);
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   margin-top: 0.5rem;
   letter-spacing: 2px;
+  text-shadow: 1px 1px 0px rgba(0,0,0,0.2);
 }
 
 /* Footer */
