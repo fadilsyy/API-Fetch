@@ -11,6 +11,11 @@ const domStatus = document.getElementById('status');
 const domPesanStatus = domStatus.querySelector('p');
 const btnCobaLagi = document.getElementById('btn-coba-lagi');
 const domJumlahHasil = document.getElementById('jumlah-hasil');
+const domCari = document.getElementById('cari');
+const domFilterElemen = document.getElementById('filter-elemen');
+
+// Variabel Global untuk menyimpan data awal agar tidak di-fetch ulang
+let semuaKarakterFontaine = [];
 
 // Fungsi Utama: Mengambil Data
 async function ambilData() {
@@ -27,9 +32,12 @@ async function ambilData() {
         // Memastikan format data yang dikembalikan API (bisa berupa object atau array)
         const daftarKarakter = Array.isArray(data) ? data : Object.values(data);
         
-        const karakterFontaine = saringDanUrutkan(daftarKarakter);
-        tampilkanKumpulanKartu(karakterFontaine);
-        sembunyikanStatus();
+        // Saring dan simpan data utama
+        semuaKarakterFontaine = saringDanUrutkan(daftarKarakter);
+        
+        // Buat opsi dropdown dan terapkan filter awal (menampilkan semua)
+        isiOpsiFilter(semuaKarakterFontaine);
+        terapkanFilter();
 
     } catch (error) {
         console.error('Fetch error:', error);
@@ -39,11 +47,42 @@ async function ambilData() {
     }
 }
 
-// Fungsi: Menyaring dan Mengurutkan Data
+// Fungsi: Menyaring dan Mengurutkan Data dari API
 function saringDanUrutkan(semuaKarakter) {
     return semuaKarakter
         .filter(char => char.nation && char.nation.toLowerCase() === 'fontaine')
         .sort((a, b) => a.name.localeCompare(b.name));
+}
+
+// Fungsi: Mengisi Opsi Filter Elemen secara dinamis
+function isiOpsiFilter(dataKarakter) {
+    // Mendapatkan elemen (vision) unik dan membuang nilai kosong/undefined
+    const elemenUnik = [...new Set(dataKarakter.map(char => char.vision).filter(v => v))].sort();
+    
+    // Reset isi dropdown dengan opsi bawaan
+    domFilterElemen.innerHTML = '<option value="Semua elemen">Semua elemen</option>';
+    
+    elemenUnik.forEach(elemen => {
+        const opsi = document.createElement('option');
+        opsi.value = elemen;
+        opsi.textContent = elemen;
+        domFilterElemen.appendChild(opsi);
+    });
+}
+
+// Fungsi: Menerapkan Pencarian dan Filter
+function terapkanFilter() {
+    const kataKunci = domCari.value.trim().toLowerCase();
+    const elemenPilihan = domFilterElemen.value;
+
+    const hasilFilter = semuaKarakterFontaine.filter(char => {
+        const namaCocok = char.name.toLowerCase().includes(kataKunci);
+        const elemenCocok = elemenPilihan === 'Semua elemen' || char.vision === elemenPilihan;
+        
+        return namaCocok && elemenCocok;
+    });
+
+    tampilkanKumpulanKartu(hasilFilter, semuaKarakterFontaine.length);
 }
 
 // Fungsi: Membuat Satu Elemen Kartu lewat DOM
@@ -107,15 +146,23 @@ function buatElemenKartu(char) {
 }
 
 // Fungsi: Menampilkan Daftar Kartu ke Grid
-function tampilkanKumpulanKartu(karakterArray) {
+function tampilkanKumpulanKartu(karakterArray, totalKarakter) {
     domGrid.innerHTML = '';
     
+    // Perbarui teks jumlah hasil
+    domJumlahHasil.textContent = `Menampilkan ${karakterArray.length} dari ${totalKarakter} karakter`;
+    
+    if (karakterArray.length === 0) {
+        tampilkanStatus('Karakter tidak ditemukan.', false);
+        return;
+    }
+
+    sembunyikanStatus();
+
     karakterArray.forEach(char => {
         const kartu = buatElemenKartu(char);
         domGrid.appendChild(kartu);
     });
-
-    domJumlahHasil.textContent = `Menampilkan ${karakterArray.length} dari ${karakterArray.length} karakter`;
 }
 
 // Fungsi Utilitas: Mengatur Tampilan Status
@@ -136,6 +183,8 @@ function sembunyikanStatus() {
 
 // Event Listeners
 btnCobaLagi.addEventListener('click', ambilData);
+domCari.addEventListener('input', terapkanFilter);
+domFilterElemen.addEventListener('change', terapkanFilter);
 
 // Inisialisasi halaman
 ambilData();
