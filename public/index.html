@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katalog Karakter Fontaine</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="index.html" aria-current="page">Katalog</a></li>
+            <li><a href="form.html">Kartu Favorit</a></li>
+        </ul>
+    </nav>
+
+    <header>
+        <h1>Katalog Karakter Fontaine</h1>
+        <p>Temukan daftar lengkap karakter playable dari wilayah Keadilan.</p>
+        <div class="pembatas-gelombang"></div>
+    </header>
+
+    <main>
+        <div class="kontrol">
+            <input type="text" id="cari" placeholder="Cari nama karakter..." aria-label="Cari nama karakter">
+            <select id="filter-elemen" aria-label="Filter berdasarkan elemen">
+                <option value="Semua elemen">Semua elemen</option>
+                <!-- Opsi elemen akan diisi oleh JS -->
+            </select>
+            <span id="jumlah-hasil" aria-live="polite">Menyiapkan data...</span>
+        </div>
+
+        <div id="status" aria-live="polite">
+            <p>Memuat data...</p>
+            <button id="btn-coba-lagi" class="tersembunyi">Coba Lagi</button>
+        </div>
+
+        <div id="grid">
+            <!-- Kartu karakter akan dirender di sini oleh JS -->
+        </div>
+    </main>
+
+    <footer>
+        <p>Data disediakan oleh <a href="https://genshin.jmp.blue" target="_blank" rel="noopener noreferrer">genshin.jmp.blue</a>.</p>
+        <p>Genshin Impact dan aset terkait adalah milik miHoYo/HoYoverse.</p>
+        <p>Project web statis ini dibuat semata-mata untuk tugas kuliah.</p>
+    </footer>
+
+    <script src="js/index.js"></script>
+</body>
+</html>

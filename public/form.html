@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buat Kartu Karakter Favorit</title>
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/form.css">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="index.html">Katalog</a></li>
+            <li><a href="form.html" aria-current="page">Kartu Favorit</a></li>
+        </ul>
+    </nav>
+
+    <header>
+        <h1>Kartu Karakter Favorit</h1>
+        <p>Pilih karakter Fontaine favoritmu dan sampaikan alasanmu.</p>
+        <div class="pembatas-gelombang"></div>
+    </header>
+
+    <main>
+        <section class="form-container">
+            <form id="form-favorit" novalidate>
+                
+                <div class="grup-input">
+                    <label for="nama">Nama Kamu</label>
+                    <input type="text" id="nama" placeholder="Masukkan namamu">
+                    <div id="error-nama" class="pesan-error" aria-live="polite"></div>
+                </div>
+
+                <div class="grup-input">
+                    <label for="karakter">Karakter Favorit</label>
+                    <select id="karakter">
+                        <option value="">Memuat karakter...</option>
+                        <!-- Pilihan karakter akan diisi oleh JS -->
+                    </select>
+                    <div class="info-tambahan">
+                        <div id="error-karakter" class="pesan-error" aria-live="polite"></div>
+                        <div id="status-karakter" aria-live="polite"></div>
+                    </div>
+                    <button type="button" id="btn-coba-lagi-form" class="tersembunyi">Coba Lagi</button>
+                </div>
+
+                <div class="grup-input">
+                    <label for="alasan">Alasan Memilih</label>
+                    <textarea id="alasan" placeholder="Mengapa karakter ini menjadi favoritmu?"></textarea>
+                    <div class="info-tambahan">
+                        <div id="error-alasan" class="pesan-error" aria-live="polite"></div>
+                        <div id="hitung-alasan" class="penghitung">0/120</div>
+                    </div>
+                </div>
+
+                <div class="aksi-form">
+                    <button type="button" id="btn-reset">Reset</button>
+                    <button type="submit" id="btn-buat">Buat Kartu</button>
+                </div>
+
+            </form>
+        </section>
+
+        <section id="hasil" aria-live="polite">
+            <!-- Kartu favorit yang di-generate akan muncul di sini -->
+        </section>
+    </main>
+
+    <footer>
+        <p>Data disediakan oleh <a href="https://genshin.jmp.blue" target="_blank" rel="noopener noreferrer">genshin.jmp.blue</a>.</p>
+        <p>Genshin Impact dan aset terkait adalah milik miHoYo/HoYoverse.</p>
+        <p>Project web statis ini dibuat semata-mata untuk tugas kuliah.</p>
+    </footer>
+
+    <script src="js/form.js"></script>
+</body>
+</html>
